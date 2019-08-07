@@ -1,0 +1,93 @@
+#多查询
+{
+  bookById(id: "book-2"){
+    id
+    pageCount
+    author{
+        lastName
+    }
+  }
+  authorById(id: "author-3"){
+    firstName
+    lastName
+  }
+}
+#数组
+{
+  authorById(id: "all"){
+    id
+    lastName
+  }
+}
+#别名
+{
+  test: userById(id: "666"){
+    id
+    name
+    pwd
+  }
+}
+#片段
+{
+  a: authorById(id: "author-1"){
+    ...comparisonFields 
+  }
+  b: authorById(id: "author-3"){
+    ...comparisonFields 
+  }
+}
+fragment comparisonFields on Author{
+    id
+    lastName
+}
+#操作名
+query User{
+  userById(id: "666"){
+    id
+    name
+    pwd
+    date
+  }
+}
+#变量及默认值
+query User($num: ID = 1){
+  userById(id: $num){
+    id
+    name
+    pwd
+  }
+}
+#指令
+query User($num: ID = 1, $withFriends: Boolean = false){
+  userById(id: $num) @skip(if: $withFriends) {
+      id
+      name
+      pwd
+   }
+}
+
+query User($num: ID = 1, $withFriends: Boolean = false){
+  userById(id: $num) @include(if: $withFriends) {
+      name
+   }
+}
+#实际传参
+query=
+query User($num: ID = "book-2"){
+  bookById(id: $num){
+    id
+    pageCount
+  }
+}
+&variables = 
+{
+    "num": "book-1"
+}
+#元字段
+query User($num: ID = "book-2"){
+  bookById(id: $num){
+    __typename
+    id
+    pageCount
+  }
+}
